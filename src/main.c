@@ -1,4 +1,9 @@
-//todo: segment off the various functions to the other c files for brevity and clarity
+/*
+todo
+----
+segment off the various functions to the other c files for brevity and clarity
+add mouse control(figure out how this would work)
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -28,7 +33,7 @@ Circle* create_circle(double x, double y, double r, double vx, double vy){
         circle->ay = 0.0;
         circles[index] = *circle;
     }
-    else{ // shift all circles by one index, remove the earliest
+    else{ // shift all circles by one index, remove the earliest, not currently important
         for (int i = 0; i < MAX_CIRCLES - 1; i++){
             circles[i] = circles[i + 1];
         }
@@ -46,10 +51,10 @@ Circle* create_circle(double x, double y, double r, double vx, double vy){
 }
 
 void update_simulation(){
-    for (int i = 0; i < num_circles; i++){
+    for(int i = 0; i < num_circles; i++){
         Circle *circle = &circles[i];
 
-        for (int j = 0; j < num_circles; j++){
+        for(int j = 0; j < num_circles; j++){
             if(i == j){ //Circle can't affect itself
                 continue;
             }
@@ -66,6 +71,7 @@ void update_simulation(){
             double fy = force_magnitude * dy / distance;
             circle->ax += fx / circle->mass;
             circle->ay += fy / circle->mass;
+            printf("[%e, %e]\n", circle->ax, circle->ay);
         }
         // update velocity and position using Euler's method
         circle->vx += circle->ax * dt;
@@ -78,7 +84,7 @@ void update_simulation(){
 void draw_simulation(SDL_Renderer *renderer){
     for(int i = 0; i < num_circles; i++){
         Circle *circle = &circles[i];
-        filledCircleRGBA(renderer, (int)circle->x, (int)circle->y, (int)circle->r, 255, 255, 255, 255);
+        aaellipseRGBA(renderer, (int)circle->x, (int)circle->y, (int)circle->r, (int)circle->r, 255, 255, 255, 255);
     }
     SDL_RenderPresent(renderer);
 }
@@ -92,20 +98,29 @@ int main(){
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     //Testing, add manual placement later
-    create_circle(200, 200, 30, 1, -0.5);
-    create_circle(500, 500, 30, -1, 0.5);
+    create_circle(300, 300, 10, 5, -5);
+    create_circle(400, 400, 10, -5, 5);
 
     int running = 1;
-    while (running){
+    int paused = 0;
+    while(running){
         SDL_Event event;
-        while (SDL_PollEvent(&event)){
-            switch (event.type){
+        while(SDL_PollEvent(&event)){
+            switch(event.type){
                 case SDL_QUIT:
                     running = 0;
                     break;
                 case SDL_KEYDOWN:
-                    if (event.key.keysym.sym == SDLK_ESCAPE){
+                    if(event.key.keysym.sym == SDLK_ESCAPE){
                         running = 0;
+                    }
+                    else if(event.key.keysym.sym == SDLK_p){
+                        if(paused == 0){
+                            paused = 1;
+                        }
+                        else if(paused == 1){
+                            paused = 0;
+                        }
                     }
                     break;
                 default:
@@ -114,13 +129,16 @@ int main(){
         }
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-        update_simulation();
+        if(!paused){
+            for(int i = 0; i < 10; i++){
+                update_simulation();
+            }
+        }
         draw_simulation(renderer);
         SDL_Delay(10); //milliseconds
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    free(circles);
     return 0;
 }
