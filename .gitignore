@@ -1,3 +1,2 @@
-include/SDL2/
 obj/*
 bin/*
