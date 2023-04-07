@@ -1,6 +1,6 @@
 # Compiler and linker options
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude
+CFLAGS = -Wall -Wextra -Iinclude -Iexternal
 LDFLAGS = -L/opt/homebrew/lib -lSDL2 -lSDL2_gfx
 
 # Source and object files

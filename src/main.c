@@ -4,108 +4,44 @@ todo
 segment off the various functions to the other c files for brevity and clarity
 add mouse control(figure out how this would work)
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <SDL2/SDL.h>
-#include "SDL2/SDL2_gfxPrimitives.h"
+
 #include <main.h>
 
-Circle circles[MAX_CIRCLES];
-int num_circles = 0;
-
-/* 
-Creates a new circle, and returns it.
-If the circle array is full, the earliest one gets deleted to make room.
-*/
-Circle* create_circle(double x, double y, double r, double vx, double vy){
-    Circle* circle = (Circle*) malloc(sizeof(Circle));
-    if(num_circles < MAX_CIRCLES){
-        int index = num_circles;
-        num_circles++;
-        circle->x = x;
-        circle->y = y;
-        circle->r = r;
-        circle->mass = (double)(M_PI * r * r);
-        circle->vx = vx;
-        circle->vy = vy;
-        circle->ax = 0.0;
-        circle->ay = 0.0;
-        circles[index] = *circle;
-    }
-    else{ // shift all circles by one index, remove the earliest, not currently important
-        for (int i = 0; i < MAX_CIRCLES - 1; i++){
-            circles[i] = circles[i + 1];
-        }
-        circle->x = x;
-        circle->y = y;
-        circle->r = r;
-        circle->mass = (double)(M_PI * r * r);
-        circle->vx = vx;
-        circle->vy = vy;
-        circle->ax = 0.0;
-        circle->ay = 0.0;
-        circles[MAX_CIRCLES - 1] = *circle;
-    }
-    return circle;
-}
-
-void update_simulation(){
-    for(int i = 0; i < num_circles; i++){
-        Circle *circle = &circles[i];
-
-        for(int j = 0; j < num_circles; j++){
-            if(i == j){ //Circle can't affect itself
-                continue;
-            }
-            Circle *other = &circles[j];
-            double dx = other->x - circle->x;
-            double dy = other->y - circle->y;
-            double distance = sqrt(dx * dx + dy * dy);
-            double min_distance = circle->r + other->r;
-            if(distance < min_distance){ //Circles are too close
-                continue;
-            }
-            double force_magnitude = G * circle->mass * other->mass / (distance * distance);
-            double fx = force_magnitude * dx / distance;
-            double fy = force_magnitude * dy / distance;
-            circle->ax += fx / circle->mass;
-            circle->ay += fy / circle->mass;
-            printf("[%e, %e]\n", circle->ax, circle->ay);
-        }
-        // update velocity and position using Euler's method
-        circle->vx += circle->ax * dt;
-        circle->vy += circle->ay * dt;
-        circle->x += circle->vx * dt;
-        circle->y += circle->vy * dt;
-    }
-}
-
-void draw_simulation(SDL_Renderer *renderer){
-    for(int i = 0; i < num_circles; i++){
-        Circle *circle = &circles[i];
-        aaellipseRGBA(renderer, (int)circle->x, (int)circle->y, (int)circle->r, (int)circle->r, 255, 255, 255, 255);
-    }
-    SDL_RenderPresent(renderer);
-}
-
 int main(){
-    srand(time(NULL));
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Init(SDL_INIT_VIDEO);
-    window = SDL_CreateWindow("Circle Movement", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
+    SDL_DisplayMode dm;
+    SDL_GetCurrentDisplayMode(0, &dm);
+    APPLICATION_WIDTH = dm.w;
+    APPLICATION_HEIGHT = dm.h;
+    window = SDL_CreateWindow("Circle Movement", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, dm.w, dm.h, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    //Testing, add manual placement later
-    create_circle(300, 300, 10, 5, -5);
-    create_circle(400, 400, 10, -5, 5);
-
-    int running = 1;
+    int running = 1; //game state
     int paused = 0;
+
+    int mouse_down = 0;
+    int x1, y1 = 0; //initial position on mouse click
+    int x2, y2 = 0; //position on mouse release
+
+    //Used for circle creation upon mouse release
+    double vx = 0;
+    double vy = 0;
+    double create_radius = 0;
+
     while(running){
         SDL_Event event;
-        while(SDL_PollEvent(&event)){
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //black
+        SDL_RenderClear(renderer); //clear renderer for next iteration of game loop
+
+        if(mouse_down){ //predictive
+            SDL_GetMouseState(&x2, &y2);
+            draw_prediction(renderer, x1, y1, x2, y2, create_radius);
+            create_radius += SIZE_INCREASE_RATE;
+        }
+
+        while(SDL_PollEvent(&event)){ //check for inputs
             switch(event.type){
                 case SDL_QUIT:
                     running = 0;
@@ -123,20 +59,38 @@ int main(){
                         }
                     }
                     break;
+                case SDL_MOUSEBUTTONDOWN:
+                    if(!mouse_down){
+                        create_radius = 0;
+                        mouse_down = 1;
+                        x1 = event.button.x;
+                        y1 = event.button.y;
+                    }
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    if(mouse_down){
+                        mouse_down = 0;
+                        vx = (double)((event.button.x-x1)/CREATION_VELOCITY_MODIFIER);
+                        vy = (double)((event.button.y-y1)/CREATION_VELOCITY_MODIFIER);
+                        create_circle(x1, y1, create_radius, vx, vy);
+                    }
+                    break;
                 default:
                     break;
             }
         }
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        
         if(!paused){
-            for(int i = 0; i < 10; i++){
+            for(int i = 0; i < 5; i++){
                 update_simulation();
             }
         }
+        
         draw_simulation(renderer);
-        SDL_Delay(10); //milliseconds
+        SDL_RenderPresent(renderer);
+        SDL_Delay(5); //milliseconds
     }
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

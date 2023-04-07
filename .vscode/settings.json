@@ -1,6 +1,6 @@
 {
     "files.associations": {
         "*.embeddedhtml": "html",
-        "glfw3.h": "c"
+        "main.h": "c"
     }
 }
