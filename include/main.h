@@ -8,6 +8,7 @@
 #define MAX_CIRCLES 10
 #define SIZE_INCREASE_RATE 0.2
 #define CREATION_VELOCITY_MODIFIER 10 //higher = slower, this is used as a divisor
+#define MAX_TRAIL_LENGTH 500
 
 typedef struct Circle {
     double x;          // x position
@@ -18,6 +19,8 @@ typedef struct Circle {
     double vy;         // y velocity
     double ax;         // x acceleration
     double ay;         // y acceleration
+    SDL_Point trail[MAX_TRAIL_LENGTH];
+    int trail_size;
 } Circle;
 
 int APPLICATION_WIDTH;

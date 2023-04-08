@@ -7,7 +7,17 @@ void draw_simulation(SDL_Renderer *renderer){
     for(int i = 0; i < num_circles; i++){
         Circle *circle = &circles[i];
         aaellipseRGBA(renderer, (int)circle->x, (int)circle->y, (int)circle->r, (int)circle->r, 255, 255, 255, 255);
+        
+        for(int j = 1; j < circle->trail_size; j++){
+            SDL_Point pos1 = circle->trail[j-1];
+            SDL_Point pos2 = circle->trail[j];
+            double alpha = (double)(j)/(double)circle->trail_size;
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha*255); // White with fading opacity
+            // printf("%d, %d        %d, %d\n", pos1.x, pos1.y, pos2.x, pos2.y);
+            SDL_RenderDrawLine(renderer, pos1.x, pos1.y, pos2.x, pos2.y);
+        }
     }
+    
 }
 
 /*

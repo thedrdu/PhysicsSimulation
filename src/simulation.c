@@ -42,6 +42,7 @@ Circle* create_circle(double x, double y, double r, double vx, double vy){
         circle->vy = vy;
         circle->ax = 0.0;
         circle->ay = 0.0;
+        circle->trail_size = 0; 
         circles[index] = *circle;
     } else {
         // Find the oldest circle and destroy it.
@@ -58,10 +59,15 @@ Circle* create_circle(double x, double y, double r, double vx, double vy){
         circle->vy = vy;
         circle->ax = 0.0;
         circle->ay = 0.0;
+        circle->trail_size = 0;
         circles[index] = *circle;
     }
     printf("created: %p\n", (void*)circle);
     return circle;
+}
+
+void update_trail(Circle* circle){
+
 }
 
 /*
@@ -99,5 +105,25 @@ void update_simulation(){
         circle->vy += circle->ay * dt;
         circle->x += circle->vx * dt;
         circle->y += circle->vy * dt;
+
+        //update trail
+        SDL_Point current_point = {circle->x, circle->y};
+        if(circle->trail_size >= MAX_TRAIL_LENGTH){
+            //remove oldest point by shifting all points to the left by one index
+            for(int i = 1; i < MAX_TRAIL_LENGTH; i++){
+                circle->trail[i-1] = circle->trail[i];
+            }
+            circle->trail[MAX_TRAIL_LENGTH-1] = current_point;
+        }
+        else{
+            //shift all existing points by one index to make room for new point
+            for(int i = circle->trail_size-1; i >= 0; i--){
+                circle->trail[i+1] = circle->trail[i];
+            }
+            circle->trail[0] = current_point;
+            circle->trail_size++;
+        }
+
+        printf("%d\n", circle->trail_size);
     }
 }
