@@ -14,7 +14,10 @@ ifeq ($(shell uname),Darwin)
 	LDFLAGS += -L/opt/homebrew/lib
 else
 	LDFLAGS += -L/usr/lib/x86_64-linux-gnu
+	LDFLAGS += -L/usr/local/lib
+	LDFLAGS += -L/lib/x86_64-linux-gnu
 endif
+
 
 LDFLAGS += -lSDL2 -lSDL2_gfx -lm
 
