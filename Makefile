@@ -1,7 +1,7 @@
 # Compiler and linker options
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude -Iexternal
-LDFLAGS = -lSDL2 -lSDL2_gfx
+LDFLAGS =
 
 # Source and object files
 SRC = src/main.c src/simulation.c src/graphics.c
@@ -13,13 +13,15 @@ TARGET = bin/simulation
 ifeq ($(shell uname),Darwin)
 	LDFLAGS += -L/opt/homebrew/lib
 else
-	LDFLAGS += -L/usr/local/lib
+	LDFLAGS += -L/usr/lib/x86_64-linux-gnu
 endif
+
+LDFLAGS += -lSDL2 -lSDL2_gfx -lm
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 obj/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@

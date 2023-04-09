@@ -23,11 +23,11 @@ typedef struct Circle {
     int trail_size;
 } Circle;
 
-int APPLICATION_WIDTH;
-int APPLICATION_HEIGHT;
+extern int APPLICATION_WIDTH;
+extern int APPLICATION_HEIGHT;
 
-Circle circles[MAX_CIRCLES];
-int num_circles;
+extern Circle circles[MAX_CIRCLES];
+extern int num_circles;
 
 void destroy_circle(Circle* circle);
 Circle* create_circle(double x, double y, double r, double vx, double vy);

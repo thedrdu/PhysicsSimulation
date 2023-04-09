@@ -7,6 +7,11 @@ add mouse control(figure out how this would work)
 
 #include <main.h>
 
+int APPLICATION_WIDTH;
+int APPLICATION_HEIGHT;
+Circle circles[MAX_CIRCLES];
+int num_circles;
+
 int main(){
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
