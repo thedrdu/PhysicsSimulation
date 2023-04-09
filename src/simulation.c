@@ -62,7 +62,7 @@ Circle* create_circle(double x, double y, double r, double vx, double vy){
         circle->trail_size = 0;
         circles[index] = *circle;
     }
-    printf("created: %p\n", (void*)circle);
+    // printf("created: %p\n", (void*)circle);
     return circle;
 }
 
@@ -120,6 +120,6 @@ void update_simulation(){
             circle->trail_size++;
         }
 
-        printf("%d\n", circle->trail_size);
+        // printf("%d\n", circle->trail_size);
     }
 }
