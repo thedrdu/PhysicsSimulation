@@ -13,7 +13,7 @@ TARGET = bin/simulation
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $(LDFLAGS) -o $@ $^
 
 obj/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@

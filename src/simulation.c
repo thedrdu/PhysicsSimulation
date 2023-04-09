@@ -66,10 +66,6 @@ Circle* create_circle(double x, double y, double r, double vx, double vy){
     return circle;
 }
 
-void update_trail(Circle* circle){
-
-}
-
 /*
 Updates the simulation by updating the attributes of all circles.
 */
