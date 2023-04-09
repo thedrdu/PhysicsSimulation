@@ -117,10 +117,10 @@ void update_simulation(){
         }
         else{
             //shift all existing points by one index to make room for new point
-            for(int i = circle->trail_size-1; i >= 0; i--){
-                circle->trail[i+1] = circle->trail[i];
-            }
-            circle->trail[0] = current_point;
+            // for(int i = 1; i < MAX_TRAIL_LENGTH; i++){
+            //     circle->trail[i-1] = circle->trail[i];
+            // }
+            circle->trail[circle->trail_size] = current_point;
             circle->trail_size++;
         }
 

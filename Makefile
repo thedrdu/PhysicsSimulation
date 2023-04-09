@@ -1,7 +1,7 @@
 # Compiler and linker options
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude -Iexternal
-LDFLAGS = -L/opt/homebrew/lib -lSDL2 -lSDL2_gfx
+LDFLAGS = -L./lib -lSDL2 -lSDL2_gfx
 
 # Source and object files
 SRC = src/main.c src/simulation.c src/graphics.c
