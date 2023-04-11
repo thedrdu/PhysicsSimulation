@@ -28,6 +28,7 @@ Deletes the oldest circle if the maximum number of circles allowed is reached.
 */
 Circle* create_circle(double x, double y, double r, double vx, double vy){
     Circle* circle = (Circle*) malloc(sizeof(Circle));
+    SDL_Point current_point = {x, y};
     if(circle == NULL){
         return NULL;
     }
@@ -44,7 +45,13 @@ Circle* create_circle(double x, double y, double r, double vx, double vy){
         circle->ay = 0.0;
         circle->trail_size = 0; 
         circles[index] = *circle;
-    } else {
+        circle->cb.size = MAX_TRAIL_LENGTH;
+        circle->cb.current_index = 0;
+        for(int i = 0; i < MAX_TRAIL_LENGTH; i++){
+            circle->cb.buffer[i] = current_point;
+        }
+    }
+    else{
         // Find the oldest circle and destroy it.
         Circle* oldest_circle = &circles[0];
         destroy_circle(oldest_circle);
@@ -104,21 +111,21 @@ void update_simulation(){
 
         //update trail
         SDL_Point current_point = {circle->x, circle->y};
-        if(circle->trail_size >= MAX_TRAIL_LENGTH){
-            //remove oldest point by shifting all points to the left by one index
-            for(int i = 1; i < MAX_TRAIL_LENGTH; i++){
-                circle->trail[i-1] = circle->trail[i];
-            }
-            circle->trail[MAX_TRAIL_LENGTH-1] = current_point;
-        }
-        else{
-            //shift all existing points by one index to make room for new point
-            // for(int i = 1; i < MAX_TRAIL_LENGTH; i++){
-            //     circle->trail[i-1] = circle->trail[i];
-            // }
-            circle->trail[circle->trail_size] = current_point;
-            circle->trail_size++;
-        }
+
+        circle->cb.buffer[circle->cb.current_index] = current_point;
+        circle->cb.current_index = (circle->cb.current_index + 1) % circle->cb.size;
+
+        // if(circle->trail_size >= MAX_TRAIL_LENGTH){
+        //     //remove oldest point by shifting all points to the left by one index
+        //     for(int i = 1; i < MAX_TRAIL_LENGTH; i++){
+        //         circle->trail[i-1] = circle->trail[i];
+        //     }
+        //     circle->trail[MAX_TRAIL_LENGTH-1] = current_point;
+        // }
+        // else{
+        //     circle->trail[circle->trail_size] = current_point;
+        //     circle->trail_size++;
+        // }
 
         // printf("%d\n", circle->trail_size);
     }

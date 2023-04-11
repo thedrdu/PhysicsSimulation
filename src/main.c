@@ -1,8 +1,7 @@
 /*
 todo
 ----
-segment off the various functions to the other c files for brevity and clarity
-add mouse control(figure out how this would work)
+circular buffer implementation
 */
 
 #include <main.h>
