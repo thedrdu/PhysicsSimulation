@@ -31,38 +31,22 @@ Circle* create_circle(double x, double y, double r, double vx, double vy){
     if(circle == NULL){
         return NULL;
     }
-    if(num_circles < MAX_CIRCLES){
-        int index = num_circles;
-        num_circles++;
-        circle->x = x;
-        circle->y = y;
-        circle->r = r;
-        circle->mass = (double)(M_PI * r * r);
-        circle->vx = vx;
-        circle->vy = vy;
-        circle->ax = 0.0;
-        circle->ay = 0.0;
-        circle->trail_size = 0; 
-        circles[index] = *circle;
-    } else {
-        // Find the oldest circle and destroy it.
+    if(num_circles >= MAX_CIRCLES){ //check if max circles reached, delete oldest to make room if so
         Circle* oldest_circle = &circles[0];
         destroy_circle(oldest_circle);
-        // Create the new circle.
-        int index = num_circles;
-        num_circles++;
-        circle->x = x;
-        circle->y = y;
-        circle->r = r;
-        circle->mass = (double)(M_PI * r * r);
-        circle->vx = vx;
-        circle->vy = vy;
-        circle->ax = 0.0;
-        circle->ay = 0.0;
-        circle->trail_size = 0;
-        circles[index] = *circle;
     }
-    // printf("created: %p\n", (void*)circle);
+    int index = num_circles;
+    num_circles++;
+    circle->x = x;
+    circle->y = y;
+    circle->r = r;
+    circle->mass = (double)(M_PI * r * r);
+    circle->vx = vx;
+    circle->vy = vy;
+    circle->ax = 0.0;
+    circle->ay = 0.0;
+    circle->trail_size = 0; 
+    circles[index] = *circle;
     return circle;
 }
 
@@ -112,14 +96,8 @@ void update_simulation(){
             circle->trail[MAX_TRAIL_LENGTH-1] = current_point;
         }
         else{
-            //shift all existing points by one index to make room for new point
-            // for(int i = 1; i < MAX_TRAIL_LENGTH; i++){
-            //     circle->trail[i-1] = circle->trail[i];
-            // }
             circle->trail[circle->trail_size] = current_point;
             circle->trail_size++;
         }
-
-        // printf("%d\n", circle->trail_size);
     }
 }

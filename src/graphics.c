@@ -13,11 +13,9 @@ void draw_simulation(SDL_Renderer *renderer){
             SDL_Point pos2 = circle->trail[j];
             double alpha = (double)(j)/(double)circle->trail_size;
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha*255); // White with fading opacity
-            // printf("%d, %d        %d, %d\n", pos1.x, pos1.y, pos2.x, pos2.y);
             SDL_RenderDrawLine(renderer, pos1.x, pos1.y, pos2.x, pos2.y);
         }
     }
-    
 }
 
 /*
