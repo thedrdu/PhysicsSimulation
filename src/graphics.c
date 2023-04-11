@@ -8,16 +8,18 @@ void draw_simulation(SDL_Renderer *renderer){
         Circle *circle = &circles[i];
         aaellipseRGBA(renderer, (int)circle->x, (int)circle->y, (int)circle->r, (int)circle->r, 255, 255, 255, 255);
         
-        for(int j = 1; j < circle->trail_size; j++){
-            SDL_Point pos1 = circle->trail[j-1];
-            SDL_Point pos2 = circle->trail[j];
-            double alpha = (double)(j)/(double)circle->trail_size;
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha*255); // White with fading opacity
-            // printf("%d, %d        %d, %d\n", pos1.x, pos1.y, pos2.x, pos2.y);
-            SDL_RenderDrawLine(renderer, pos1.x, pos1.y, pos2.x, pos2.y);
+        int i = circle->cb.current_index;
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        for(int j = 0; j < MAX_TRAIL_LENGTH; j++){
+            i %= MAX_TRAIL_LENGTH;
+            SDL_Point pt = circle->cb.buffer[i];
+            float age_ratio = (float)j / MAX_TRAIL_LENGTH;
+            Uint8 alpha = (Uint8)(255 * (age_ratio));
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha);
+            SDL_RenderDrawPoint(renderer, pt.x, pt.y);
+            i++;
         }
     }
-    
 }
 
 /*

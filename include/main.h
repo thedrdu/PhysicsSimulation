@@ -10,6 +10,12 @@
 #define CREATION_VELOCITY_MODIFIER 10 //higher = slower, this is used as a divisor
 #define MAX_TRAIL_LENGTH 500
 
+typedef struct {
+    SDL_Point buffer[MAX_TRAIL_LENGTH];
+    int size;
+    int current_index;
+} CircularBuffer;
+
 typedef struct Circle {
     double x;          // x position
     double y;          // y position
@@ -19,8 +25,7 @@ typedef struct Circle {
     double vy;         // y velocity
     double ax;         // x acceleration
     double ay;         // y acceleration
-    SDL_Point trail[MAX_TRAIL_LENGTH];
-    int trail_size;
+    CircularBuffer cb;
 } Circle;
 
 extern int APPLICATION_WIDTH;

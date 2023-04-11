@@ -1,8 +1,7 @@
 /*
 todo
 ----
-segment off the various functions to the other c files for brevity and clarity
-add mouse control(figure out how this would work)
+circular buffer implementation
 */
 
 #include <main.h>
@@ -11,6 +10,8 @@ int APPLICATION_WIDTH;
 int APPLICATION_HEIGHT;
 Circle circles[MAX_CIRCLES];
 int num_circles;
+
+int STEPS = 0;
 
 int main(){
     SDL_Window *window = NULL;
@@ -87,6 +88,7 @@ int main(){
         
         if(!paused){
             for(int i = 0; i < 5; i++){
+                STEPS++;
                 update_simulation();
             }
         }
