@@ -16,25 +16,15 @@ void draw_simulation(SDL_Renderer *renderer){
         //     SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha*255); // White with fading opacity
         //     SDL_RenderDrawLine(renderer, pos1.x, pos1.y, pos2.x, pos2.y);
         // }
-        // int j = (circle->cb.current_index + 1) % circle->cb.size;
-        // for(int i = 0; i < circle->cb.size; i++){
-        //     SDL_Point pos1 = circle->cb.buffer[j];
-        //     j = (j + 1) % circle->cb.size;
-        //     SDL_Point pos2 = circle->cb.buffer[j];
-        //     double alpha = (double)(i)/(double)circle->cb.size;
-        //     SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha*255); // White with fading opacity
-        //     SDL_RenderDrawLine(renderer, pos1.x, pos1.y, pos2.x, pos2.y);
-        // }
-        for(int j = 1; j < circle->trail_size; j++){
-            int idx1 = (circle->cb.current_index + j - 1) % MAX_TRAIL_LENGTH;
-            int idx2 = (circle->cb.current_index + j) % MAX_TRAIL_LENGTH;
-            SDL_Point pos1 = circle->trail[idx1];
-            SDL_Point pos2 = circle->trail[idx2];
-            double alpha = (double)(j)/(double)circle->trail_size;
+        int j = (circle->cb.current_index + 1) % circle->cb.size;
+        for(int i = 0; i < circle->cb.size; i++){
+            SDL_Point pos1 = circle->cb.buffer[j];
+            j = (j + 1) % circle->cb.size;
+            SDL_Point pos2 = circle->cb.buffer[j];
+            double alpha = (double)(i)/(double)circle->cb.size;
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha*255); // White with fading opacity
             SDL_RenderDrawLine(renderer, pos1.x, pos1.y, pos2.x, pos2.y);
         }
-
 
     }
     
