@@ -1,4 +1,6 @@
-# Physics Simulation
+# Physics Simulation - Circular Buffer
+
+### Note: You are on the circular-buffer branch, which uses a slightly different implementation. Performance may vary!
 
 This is a physics simulation written in C, where users can place circles and watch as they move under the forces of each others' gravity. Users can hold down the mouse button to increase the size of the circle to be created, and move their cursor to determine its initial velocity and direction. Once they release the mouse, the circle will then be placed.
 
