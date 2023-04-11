@@ -11,6 +11,8 @@ int APPLICATION_HEIGHT;
 Circle circles[MAX_CIRCLES];
 int num_circles;
 
+int STEPS = 0;
+
 int main(){
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
@@ -86,6 +88,7 @@ int main(){
         
         if(!paused){
             for(int i = 0; i < 5; i++){
+                STEPS++;
                 update_simulation();
             }
         }

@@ -1,6 +1,13 @@
 {
     "files.associations": {
         "*.embeddedhtml": "html",
-        "main.h": "c"
+        "main.h": "c",
+        "__hash_table": "c",
+        "__split_buffer": "c",
+        "array": "c",
+        "bitset": "c",
+        "initializer_list": "c",
+        "unordered_map": "c",
+        "vector": "c"
     }
 }

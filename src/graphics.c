@@ -7,27 +7,23 @@ void draw_simulation(SDL_Renderer *renderer){
     for(int i = 0; i < num_circles; i++){
         Circle *circle = &circles[i];
         aaellipseRGBA(renderer, (int)circle->x, (int)circle->y, (int)circle->r, (int)circle->r, 255, 255, 255, 255);
-        
-        //trail
-        // for(int j = 1; j < circle->trail_size; j++){
-        //     SDL_Point pos1 = circle->trail[j-1];
-        //     SDL_Point pos2 = circle->trail[j];
-        //     double alpha = (double)(j)/(double)circle->trail_size;
-        //     SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha*255); // White with fading opacity
-        //     SDL_RenderDrawLine(renderer, pos1.x, pos1.y, pos2.x, pos2.y);
-        // }
-        int j = (circle->cb.current_index + 1) % circle->cb.size;
-        for(int i = 0; i < circle->cb.size; i++){
-            SDL_Point pos1 = circle->cb.buffer[j];
-            j = (j + 1) % circle->cb.size;
-            SDL_Point pos2 = circle->cb.buffer[j];
-            double alpha = (double)(i)/(double)circle->cb.size;
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha*255); // White with fading opacity
-            SDL_RenderDrawLine(renderer, pos1.x, pos1.y, pos2.x, pos2.y);
-        }
 
+        //draw trail
+        int i = circle->cb.current_index;
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        for(int j = 0; j < MAX_TRAIL_LENGTH; j++){
+            i %= MAX_TRAIL_LENGTH;
+            SDL_Point current_point = circle->cb.buffer[i];
+            // Calculate alpha based on age of point
+            float age_ratio = (float)j / MAX_TRAIL_LENGTH;
+            Uint8 alpha = (Uint8)(255 * (age_ratio));
+            // Set color with alpha value
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha);
+            // Draw a point with the current color and coordinates
+            SDL_RenderDrawPoint(renderer, current_point.x, current_point.y);
+            i++;
+        }
     }
-    
 }
 
 /*

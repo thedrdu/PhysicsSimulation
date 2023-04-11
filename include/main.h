@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <SDL2/SDL.h>
 #include "SDL2/SDL2_gfxPrimitives.h"
 
 #define dt 0.01
 #define G 0.66743
-#define MAX_CIRCLES 10
+#define MAX_CIRCLES 5
 #define SIZE_INCREASE_RATE 0.2
 #define CREATION_VELOCITY_MODIFIER 10 //higher = slower, this is used as a divisor
 #define MAX_TRAIL_LENGTH 500
@@ -25,9 +26,7 @@ typedef struct Circle {
     double vy;         // y velocity
     double ax;         // x acceleration
     double ay;         // y acceleration
-    SDL_Point trail[MAX_TRAIL_LENGTH];
     CircularBuffer cb;
-    int trail_size;
 } Circle;
 
 extern int APPLICATION_WIDTH;
